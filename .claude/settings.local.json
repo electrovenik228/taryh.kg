@@ -15,7 +15,8 @@
       "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cat /home/aman/Taryh/requirements.txt && echo '---' && cat /home/aman/Taryh/.env.example\")",
       "Bash(wsl -d Ubuntu-24.04 -- bash -c \"ls -la /home/aman/Taryh/.gitignore 2>/dev/null || echo 'no .gitignore' && ls /home/aman/Taryh/.git 2>/dev/null || echo 'no .git'\")",
       "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && chmod +x build.sh && git init && git config user.email 'alievbakdoolot301@gmail.com' && git config user.name 'shmakadyavka' && git add -A && git status --short\")",
-      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && git rm --cached static/img/symbols/kyrgyz-emblem-test static/img/symbols/kyrgyz-emblem.png .claude/settings.local.json 2>/dev/null; git add -A && git commit -m 'Initial commit: Taryh.kg — educational platform about Kyrgyzstan history' 2>&1\")"
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && git rm --cached static/img/symbols/kyrgyz-emblem-test static/img/symbols/kyrgyz-emblem.png .claude/settings.local.json 2>/dev/null; git add -A && git commit -m 'Initial commit: Taryh.kg — educational platform about Kyrgyzstan history' 2>&1\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && git add runtime.txt && git commit -m 'fix: pin Python 3.12 via runtime.txt for Render deploy'\")"
     ]
   }
 }
