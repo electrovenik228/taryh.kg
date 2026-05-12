@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wsl bash *)",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"curl -v 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Emblem_of_Kyrgyzstan.svg/400px-Emblem_of_Kyrgyzstan.svg.png' 2>&1 | head -30\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c 'python3 -c \" *)",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cp /home/aman/Taryh/static/img/symbols/kyrgyz-emblem-test /home/aman/Taryh/static/img/symbols/kyrgyz-emblem.svg && ls -lh /home/aman/Taryh/static/img/symbols/\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && source venv/bin/activate && python manage.py check 2>&1 | tail -5\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c 'cd /home/aman/Taryh && source venv/bin/activate && python manage.py runserver --noreload 2>&1 & *)",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cat /home/aman/Taryh/apps/history/models.py && echo '---' && cat /home/aman/Taryh/apps/personalities/models.py && echo '---' && cat /home/aman/Taryh/apps/symbols/models.py && echo '---' && cat /home/aman/Taryh/apps/quizzes/models.py && echo '---' && cat /home/aman/Taryh/apps/core/models.py\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && source venv/bin/activate && python manage.py flush --no-input 2>&1 && python manage.py loaddata fixtures/initial_data.json 2>&1\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && source venv/bin/activate && python manage.py createsuperuser --noinput --username admin --email admin@taryh.kg 2>&1; python manage.py shell -c \\\\\"from django.contrib.auth import get_user_model; U=get_user_model\\(\\); u=U.objects.get\\(username='admin'\\); u.set_password\\('admin123'\\); u.save\\(\\); print\\('admin OK'\\)\\\\\" 2>&1\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && source venv/bin/activate && python manage.py check 2>&1 | tail -3\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && source venv/bin/activate && pip freeze 2>/dev/null && echo '---' && ls -la && echo '---' && cat taryh/settings.py\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cat /home/aman/Taryh/requirements.txt && echo '---' && cat /home/aman/Taryh/.env.example\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"ls -la /home/aman/Taryh/.gitignore 2>/dev/null || echo 'no .gitignore' && ls /home/aman/Taryh/.git 2>/dev/null || echo 'no .git'\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && chmod +x build.sh && git init && git config user.email 'alievbakdoolot301@gmail.com' && git config user.name 'shmakadyavka' && git add -A && git status --short\")",
+      "Bash(wsl -d Ubuntu-24.04 -- bash -c \"cd /home/aman/Taryh && git rm --cached static/img/symbols/kyrgyz-emblem-test static/img/symbols/kyrgyz-emblem.png .claude/settings.local.json 2>/dev/null; git add -A && git commit -m 'Initial commit: Taryh.kg — educational platform about Kyrgyzstan history' 2>&1\")"
+    ]
+  }
+}

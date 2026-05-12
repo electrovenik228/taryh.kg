@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Исторические личности — Тарых{% endblock %}
+
+{% block content %}
+
+<div class="bg-gradient-to-br from-gray-800 to-gray-900 text-white py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-sm text-white/60 mb-4">
+      <a href="{% url 'core:home' %}" class="hover:text-white">Главная</a>
+      <span class="mx-2">/</span>
+      <span>Личности</span>
+    </nav>
+    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Великие личности Кыргызстана</h1>
+    <p class="text-white/70 text-lg max-w-2xl">Герои, поэты, политики и мыслители — люди, вписавшие своё имя в историю народа</p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-12">
+
+  <!-- Filter by period -->
+  <div class="flex flex-wrap gap-2 mb-10">
+    <a href="{% url 'personalities:list' %}"
+       class="px-4 py-2 rounded-full text-sm font-semibold transition-colors {% if not selected_period %}bg-gray-800 text-white{% else %}bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-gray-500{% endif %}">
+      Все эпохи
+    </a>
+    {% for period in periods %}
+    <a href="?period={{ period.slug }}"
+       class="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+       style="{% if selected_period == period.slug %}background-color: {{ period.color }}; color: white;{% else %}background: white; border: 1px solid #e5e7eb; color: #4b5563;{% endif %}">
+      {{ period.title }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Personalities Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+    {% for person in personalities %}
+    <a href="{% url 'personalities:detail' person.slug %}" class="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 card-hover">
+      <div class="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 overflow-hidden">
+        {% if person.photo %}
+        <img src="{{ person.photo.url }}" alt="{{ person.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+        {% else %}
+        <div class="w-full h-full flex items-center justify-center">
+          <svg class="w-16 h-16 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        {% endif %}
+      </div>
+      <div class="p-4">
+        <h3 class="font-bold text-sm group-hover:text-kyrgyz-red transition-colors leading-snug">{{ person.name }}</h3>
+        <p class="text-xs text-gray-400 mt-0.5">{{ person.get_years }}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ person.role }}</p>
+        {% if person.period %}
+        <span class="inline-block mt-2 text-xs px-2 py-0.5 rounded-full" style="background-color: {{ person.period.color }}22; color: {{ person.period.color }}">
+          {{ person.period.title|truncatechars:15 }}
+        </span>
+        {% endif %}
+      </div>
+    </a>
+    {% empty %}
+    <div class="col-span-full text-center py-16 text-gray-400">
+      <p class="text-lg font-medium">Личности ещё не добавлены</p>
+      <a href="/admin/personalities/personality/add/" class="mt-2 inline-block text-kyrgyz-red hover:underline font-medium">+ Добавить личность</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Результат теста — {{ result.quiz.title }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto px-4 py-12">
+
+  <!-- Result Card -->
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
+    <div class="{% if result.percentage >= 80 %}bg-gradient-to-br from-green-500 to-green-700{% elif result.percentage >= 50 %}bg-gradient-to-br from-yellow-500 to-amber-600{% else %}bg-gradient-to-br from-red-500 to-red-700{% endif %} p-8 text-white text-center">
+
+      <!-- Score circle -->
+      <div class="w-28 h-28 mx-auto mb-4 rounded-full bg-white/20 flex flex-col items-center justify-center border-4 border-white/40">
+        <div class="text-3xl font-black">{{ result.percentage }}%</div>
+        <div class="text-xs opacity-80">результат</div>
+      </div>
+
+      <h1 class="text-2xl font-bold mb-1">
+        {% if result.percentage >= 80 %}Отлично! 🎉
+        {% elif result.percentage >= 60 %}Хорошо! 👍
+        {% elif result.percentage >= 40 %}Неплохо 🙂
+        {% else %}Попробуй ещё раз 💪{% endif %}
+      </h1>
+      <p class="text-white/80">{{ result.quiz.title }}</p>
+    </div>
+
+    <div class="p-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="text-center">
+          <div class="text-2xl font-extrabold text-green-600">{{ result.score }}</div>
+          <div class="text-xs text-gray-400">правильных</div>
+        </div>
+        <div class="text-center border-x border-gray-100 dark:border-gray-700">
+          <div class="text-2xl font-extrabold text-red-500">{{ result.total_questions|add:"-"|add:result.score }}</div>
+          <div class="text-xs text-gray-400">неправильных</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-extrabold text-blue-500">
+            {% if result.time_taken >= 60 %}{{ result.time_taken|divisibleby:60 }}м {% endif %}{{ result.time_taken }}с
+          </div>
+          <div class="text-xs text-gray-400">затрачено</div>
+        </div>
+      </div>
+
+      <!-- Score bar -->
+      <div class="mb-8">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-gray-500">{{ result.score }} из {{ result.total_questions }} правильных</span>
+          <span class="font-bold">{{ result.percentage }}%</span>
+        </div>
+        <div class="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-1000
+                       {% if result.percentage >= 80 %}bg-green-500
+                       {% elif result.percentage >= 50 %}bg-yellow-500
+                       {% else %}bg-red-500{% endif %}"
+               style="width: {{ result.percentage }}%"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="{% url 'quizzes:take' result.quiz.pk %}"
+           class="flex-1 text-center px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors">
+          Пройти снова
+        </a>
+        <a href="{% url 'quizzes:list' %}"
+           class="flex-1 text-center px-5 py-3 border border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Все тесты
+        </a>
+        <a href="{% url 'users:profile' %}"
+           class="flex-1 text-center px-5 py-3 border border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          Мой профиль
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  {% if leaderboard %}
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+    <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+      🏆 Рейтинг по этому тесту
+    </h2>
+    <div class="space-y-2">
+      {% for r in leaderboard %}
+      <div class="flex items-center gap-4 px-3 py-2.5 rounded-xl
+                  {% if r.user == request.user %}bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800/30{% else %}hover:bg-gray-50 dark:hover:bg-gray-700{% endif %}">
+        <span class="text-lg font-black
+          {% if forloop.counter == 1 %}text-yellow-500
+          {% elif forloop.counter == 2 %}text-gray-400
+          {% elif forloop.counter == 3 %}text-amber-700
+          {% else %}text-gray-300{% endif %}">
+          {% if forloop.counter <= 3 %}
+            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}
+          {% else %}{{ forloop.counter }}{% endif %}
+        </span>
+        <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 font-bold text-sm">
+          {{ r.user.username|first|upper }}
+        </div>
+        <div class="flex-1">
+          <div class="font-medium text-sm">{{ r.user.username }}{% if r.user == request.user %} <span class="text-xs text-indigo-500">(вы)</span>{% endif %}</div>
+        </div>
+        <div class="text-right">
+          <div class="font-bold text-sm">{{ r.percentage }}%</div>
+          <div class="text-xs text-gray-400">{{ r.score }}/{{ r.total_questions }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

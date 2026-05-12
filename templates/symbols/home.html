@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Государственные символы — Тарых{% endblock %}
+
+{% block content %}
+
+<div class="bg-gradient-to-br from-red-900 to-red-700 text-white py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-sm text-white/60 mb-4">
+      <a href="{% url 'core:home' %}" class="hover:text-white">Главная</a>
+      <span class="mx-2">/</span>
+      <span>Символика</span>
+    </nav>
+    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Государственные символы</h1>
+    <p class="text-white/80 text-lg max-w-2xl">Узнай историю и значение флага, герба и гимна Кыргызской Республики</p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-16">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+    <!-- Flag -->
+    <a href="{% url 'symbols:flag' %}" class="group card-hover">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 h-full">
+        <div class="h-52 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center p-6 relative overflow-hidden">
+          <!-- Animated Tunduk -->
+          <div class="relative w-32 h-32 group-hover:scale-110 transition-transform duration-500">
+            <svg viewBox="0 0 200 200" class="w-full h-full animate-spin-slow" fill="white">
+              <circle cx="100" cy="100" r="90" fill="none" stroke="white" stroke-width="5" opacity="0.6"/>
+              <circle cx="100" cy="100" r="60" fill="none" stroke="white" stroke-width="5" opacity="0.8"/>
+              <circle cx="100" cy="100" r="28" fill="none" stroke="white" stroke-width="5"/>
+              <line x1="100" y1="10" x2="100" y2="190" stroke="white" stroke-width="3"/>
+              <line x1="10" y1="100" x2="190" y2="100" stroke="white" stroke-width="3"/>
+              <line x1="36" y1="36" x2="164" y2="164" stroke="white" stroke-width="2.5"/>
+              <line x1="164" y1="36" x2="36" y2="164" stroke="white" stroke-width="2.5"/>
+              <line x1="21" y1="68" x2="179" y2="132" stroke="white" stroke-width="2"/>
+              <line x1="21" y1="132" x2="179" y2="68" stroke="white" stroke-width="2"/>
+              <line x1="68" y1="21" x2="132" y2="179" stroke="white" stroke-width="2"/>
+              <line x1="132" y1="21" x2="68" y2="179" stroke="white" stroke-width="2"/>
+            </svg>
+          </div>
+          <!-- 40 sun rays hint -->
+          <div class="absolute top-3 right-3 bg-white/20 rounded-lg px-2 py-1 text-xs font-semibold">40 лучей</div>
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold mb-3 group-hover:text-kyrgyz-red transition-colors">Флаг</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Красный флаг с изображением тюндюка и сорока солнечных лучей — символ единства, мира и открытого неба.</p>
+          <div class="flex items-center text-kyrgyz-red font-semibold text-sm gap-1 group-hover:gap-2 transition-all">
+            Интерактивное изучение
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Emblem -->
+    <a href="{% url 'symbols:emblem' %}" class="group card-hover">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 h-full">
+        <div class="h-52 bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center p-6">
+          <div class="text-white text-center group-hover:scale-110 transition-transform duration-500">
+            <svg class="w-28 h-28 mx-auto" viewBox="0 0 120 120" fill="none">
+              <!-- Simplified eagle/emblem SVG -->
+              <circle cx="60" cy="60" r="55" fill="none" stroke="white" stroke-width="3" opacity="0.4"/>
+              <circle cx="60" cy="60" r="40" fill="none" stroke="white" stroke-width="2" opacity="0.6"/>
+              <!-- Eagle body -->
+              <ellipse cx="60" cy="65" rx="18" ry="22" fill="white" opacity="0.9"/>
+              <!-- Wings -->
+              <path d="M42 60 Q20 45 15 55 Q25 70 42 68Z" fill="white" opacity="0.85"/>
+              <path d="M78 60 Q100 45 105 55 Q95 70 78 68Z" fill="white" opacity="0.85"/>
+              <!-- Head -->
+              <circle cx="60" cy="45" r="10" fill="white" opacity="0.9"/>
+              <!-- Sun above -->
+              <circle cx="60" cy="25" r="8" fill="white" opacity="0.8"/>
+              <line x1="60" y1="10" x2="60" y2="15" stroke="white" stroke-width="2" opacity="0.7"/>
+              <line x1="75" y1="14" x2="72" y2="18" stroke="white" stroke-width="2" opacity="0.7"/>
+              <line x1="80" y1="25" x2="75" y2="25" stroke="white" stroke-width="2" opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold mb-3 group-hover:text-kyrgyz-red transition-colors">Герб</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Орёл, горные вершины и озеро Иссык-Куль — символы величия и природной красоты Кыргызстана.</p>
+          <div class="flex items-center text-kyrgyz-red font-semibold text-sm gap-1 group-hover:gap-2 transition-all">
+            Интерактивное изучение
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Anthem -->
+    <a href="{% url 'symbols:anthem' %}" class="group card-hover">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 h-full">
+        <div class="h-52 bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center p-6">
+          <div class="text-white text-center group-hover:scale-110 transition-transform duration-500">
+            <!-- Music notes -->
+            <div class="text-7xl select-none" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3))">🎵</div>
+            <div class="mt-2 text-sm opacity-80 font-medium">«Ак Мөөрүм»</div>
+          </div>
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold mb-3 group-hover:text-kyrgyz-red transition-colors">Гимн</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Государственный гимн «Ак Мөөрүм» — слова, история создания и авторы.</p>
+          <div class="flex items-center text-kyrgyz-red font-semibold text-sm gap-1 group-hover:gap-2 transition-all">
+            Текст и аудио
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

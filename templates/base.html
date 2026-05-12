@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true', mobileMenu: false }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      :class="darkMode ? 'dark' : ''">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Тарых — История Кыргызстана{% endblock %}</title>
+  <meta name="description" content="Интерактивная платформа для изучения истории и культуры Кыргызстана">
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            kyrgyz: {
+              red: '#E8112D',
+              gold: '#F5A623',
+              dark: '#1a0a0a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'flag-wave': 'flagWave 3s ease-in-out infinite',
+            'fade-up': 'fadeUp 0.6s ease-out',
+            'spin-slow': 'spin 8s linear infinite',
+          },
+          keyframes: {
+            flagWave: {
+              '0%, 100%': { transform: 'skewX(-2deg) skewY(0.5deg)' },
+              '50%': { transform: 'skewX(2deg) skewY(-0.5deg)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .gradient-text {
+      background: linear-gradient(135deg, #E8112D, #F5A623);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
+
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="{% url 'core:home' %}" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-full bg-kyrgyz-red flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">
+            Т
+          </div>
+          <span class="font-bold text-xl hidden sm:block">
+            <span class="text-kyrgyz-red">Тарых</span><span class="text-gray-400 dark:text-gray-500">.кг</span>
+          </span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-2">
+          <a href="{% url 'core:home' %}" class="nav-link">Главная</a>
+          <a href="{% url 'history:list' %}" class="nav-link">История</a>
+          <a href="{% url 'history:timeline' %}" class="nav-link">Таймлайн</a>
+          <a href="{% url 'symbols:home' %}" class="nav-link">Символика</a>
+          <a href="{% url 'personalities:list' %}" class="nav-link">Личности</a>
+          <a href="{% url 'quizzes:list' %}" class="nav-link">Тесты</a>
+        </div>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-3">
+          <!-- Dark mode toggle -->
+          <button @click="darkMode = !darkMode"
+                  class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  :title="darkMode ? 'Светлая тема' : 'Тёмная тема'">
+            <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+          </button>
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'users:profile' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm font-medium">
+              <div class="w-7 h-7 rounded-full bg-kyrgyz-red text-white flex items-center justify-center text-xs font-bold">
+                {{ user.username|first|upper }}
+              </div>
+              <span class="hidden sm:block">{{ user.username }}</span>
+            </a>
+            <a href="{% url 'users:logout' %}" class="text-sm text-gray-500 hover:text-red-500 transition-colors">Выйти</a>
+          {% else %}
+            <a href="{% url 'users:login' %}" class="px-4 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">Войти</a>
+            <a href="{% url 'users:register' %}" class="px-4 py-1.5 text-sm font-medium bg-kyrgyz-red text-white rounded-lg hover:bg-red-700 transition-colors">Регистрация</a>
+          {% endif %}
+
+          <!-- Mobile menu button -->
+          <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileMenu" x-transition x-cloak class="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 space-y-1">
+      <a href="{% url 'core:home' %}" class="mobile-nav-link">Главная</a>
+      <a href="{% url 'history:list' %}" class="mobile-nav-link">История</a>
+      <a href="{% url 'history:timeline' %}" class="mobile-nav-link">Таймлайн</a>
+      <a href="{% url 'symbols:home' %}" class="mobile-nav-link">Символика</a>
+      <a href="{% url 'personalities:list' %}" class="mobile-nav-link">Личности</a>
+      <a href="{% url 'quizzes:list' %}" class="mobile-nav-link">Тесты</a>
+    </div>
+  </nav>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 pt-4" x-data>
+    {% for message in messages %}
+    <div x-data="{ show: true }" x-show="show" x-transition
+         class="mb-2 flex items-center justify-between px-4 py-3 rounded-lg
+         {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-400
+         {% elif message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-400
+         {% else %}bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400{% endif %}">
+      <span>{{ message }}</span>
+      <button @click="show = false" class="ml-4 opacity-60 hover:opacity-100">✕</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Main content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-20 bg-gray-900 dark:bg-gray-950 text-gray-300">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-full bg-kyrgyz-red flex items-center justify-center text-white font-bold text-lg">Т</div>
+            <span class="font-bold text-xl text-white">Тарых.кг</span>
+          </div>
+          <p class="text-sm text-gray-400">Интерактивная платформа для изучения истории и культуры Кыргызстана.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-white mb-3">Разделы</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="{% url 'history:list' %}" class="hover:text-kyrgyz-red transition-colors">История</a></li>
+            <li><a href="{% url 'symbols:home' %}" class="hover:text-kyrgyz-red transition-colors">Государственная символика</a></li>
+            <li><a href="{% url 'personalities:list' %}" class="hover:text-kyrgyz-red transition-colors">Известные личности</a></li>
+            <li><a href="{% url 'quizzes:list' %}" class="hover:text-kyrgyz-red transition-colors">Тесты и викторины</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-white mb-3">Аккаунт</h4>
+          <ul class="space-y-2 text-sm">
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'users:profile' %}" class="hover:text-kyrgyz-red transition-colors">Профиль</a></li>
+            <li><a href="{% url 'users:logout' %}" class="hover:text-kyrgyz-red transition-colors">Выйти</a></li>
+            {% else %}
+            <li><a href="{% url 'users:login' %}" class="hover:text-kyrgyz-red transition-colors">Войти</a></li>
+            <li><a href="{% url 'users:register' %}" class="hover:text-kyrgyz-red transition-colors">Регистрация</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+        © 2024 Тарых.кг — Изучай историю Кыргызстана
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .nav-link {
+      @apply px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300
+             hover:text-kyrgyz-red hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors
+             tracking-wide;
+    }
+    .mobile-nav-link {
+      @apply block px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300
+             hover:text-kyrgyz-red hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors;
+    }
+  </style>
+</body>
+</html>

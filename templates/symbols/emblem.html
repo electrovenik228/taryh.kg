@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Герб Кыргызстана — Государственная символика{% endblock %}
+
+{% block content %}
+
+<div class="bg-gradient-to-br from-amber-700 to-amber-900 text-white py-12 px-4">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-sm text-white/60 mb-4">
+      <a href="{% url 'core:home' %}" class="hover:text-white">Главная</a>
+      <span class="mx-2">/</span>
+      <a href="{% url 'symbols:home' %}" class="hover:text-white">Символика</a>
+      <span class="mx-2">/</span>
+      <span>Герб</span>
+    </nav>
+    <h1 class="text-4xl font-extrabold mb-2">Герб Кыргызской Республики</h1>
+    <p class="text-white/80">Принят 2 июня 1992 года</p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+
+    <!-- Official Emblem Image -->
+    <div>
+      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+        <h2 class="text-xl font-bold mb-6 text-center">Государственный герб</h2>
+        <div class="flex justify-center">
+          {% load static %}
+          <img src="{% static 'img/symbols/kyrgyz-emblem.svg' %}"
+               alt="Герб Кыргызской Республики"
+               class="w-72 h-auto drop-shadow-xl">
+        </div>
+      </div>
+
+      <!-- Elements grid -->
+      <div class="mt-6 grid grid-cols-2 gap-3">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">🦅</div>
+          <div class="font-semibold text-sm mb-1">Горный орёл</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Символ свободы и мощи государства. Орёл — почитаемая птица в кыргызской культуре.</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">⛰️</div>
+          <div class="font-semibold text-sm mb-1">Горы Ала-Тоо</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Величие и красота Кыргызстана. Снежные вершины олицетворяют чистоту.</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">💧</div>
+          <div class="font-semibold text-sm mb-1">Иссык-Куль</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">«Жемчужина» Кыргызстана — одно из крупнейших горных озёр мира.</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">☀️</div>
+          <div class="font-semibold text-sm mb-1">Восходящее солнце</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Символизирует светлое будущее и процветание независимого Кыргызстана.</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">🏠</div>
+          <div class="font-semibold text-sm mb-1">Тюндюк</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Верхний круг юрты — символ дома, отечества и единства народа.</div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-4">
+          <div class="text-2xl mb-1">🌿</div>
+          <div class="font-semibold text-sm mb-1">Орнамент</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Традиционный кыргызский орнамент по кругу — символ культуры и самобытности народа.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description sidebar -->
+    <div class="space-y-6">
+      {% if symbol %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h2 class="text-2xl font-bold mb-4">{{ symbol.title }}</h2>
+        <div class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ symbol.description|linebreaks }}</div>
+      </div>
+      {% if symbol.history %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h3 class="text-xl font-bold mb-3">История создания</h3>
+        <div class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">{{ symbol.history|linebreaks }}</div>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h2 class="text-2xl font-bold mb-4">Герб Кыргызской Республики</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          Государственный герб Кыргызской Республики представляет собой изображение в голубом круге восходящего солнца
+          на фоне горных пиков Ала-Тоо, в центре которого — озеро Иссык-Куль. В верхней части круга изображён тюндюк
+          кыргызской юрты. По обеим сторонам раскинул крылья горный орёл. По кругу герб обрамлён традиционным кыргызским орнаментом
+          и надписью «КЫРГЫЗ РЕСПУБЛИКАСЫ».
+        </p>
+      </div>
+      {% endif %}
+
+      <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800/30">
+        <h3 class="font-bold mb-4 text-amber-700">Быстрые факты</h3>
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Принят</dt>
+            <dd class="font-semibold">2 июня 1992</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Авторы</dt>
+            <dd class="font-semibold">Эркинбек Сыдыков,<br>Анатолий Руденко</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Форма</dt>
+            <dd class="font-semibold">Круглая</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Цвета</dt>
+            <dd class="font-semibold">Синий, белый, золотой</dd>
+          </div>
+        </dl>
+      </div>
+
+      <a href="{% url 'symbols:home' %}" class="block bg-gradient-to-br from-amber-600 to-amber-800 text-white rounded-2xl p-5 text-center hover:from-amber-700 hover:to-amber-900 transition-colors">
+        <div class="text-2xl mb-2">←</div>
+        <div class="font-semibold">Все символы</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

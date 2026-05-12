@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} — Тест{% endblock %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-4 py-10"
+     x-data="quizApp({{ quiz.question_count }}, {{ quiz.time_limit }})">
+
+  <!-- Quiz Header -->
+  <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white rounded-2xl p-6 mb-6 shadow-lg">
+    <div class="flex items-start justify-between flex-wrap gap-4">
+      <div>
+        <div class="text-xs text-indigo-200 mb-1">{{ quiz.get_category_display }} · {{ quiz.get_difficulty_display }}</div>
+        <h1 class="text-2xl font-extrabold">{{ quiz.title }}</h1>
+      </div>
+      <!-- Timer -->
+      {% if quiz.time_limit %}
+      <div class="text-center bg-white/20 rounded-xl px-4 py-2">
+        <div class="text-xs text-indigo-200 mb-1">Время</div>
+        <div class="text-2xl font-mono font-bold" x-text="formatTime(timeLeft)">{{ quiz.time_limit }}с</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Progress bar -->
+    <div class="mt-4">
+      <div class="flex justify-between text-xs text-indigo-200 mb-1.5">
+        <span>Вопрос <span x-text="current + 1">1</span> из {{ quiz.question_count }}</span>
+        <span x-text="Math.round((current / {{ quiz.question_count }}) * 100) + '%'">0%</span>
+      </div>
+      <div class="h-1.5 bg-white/20 rounded-full overflow-hidden">
+        <div class="h-full bg-white rounded-full transition-all duration-500"
+             :style="'width: ' + ((current / {{ quiz.question_count }}) * 100) + '%'"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form method="post" id="quiz-form" @submit="handleSubmit">
+    {% csrf_token %}
+    <input type="hidden" name="time_taken" x-model="timeTaken">
+
+    {% for question in questions %}
+    <div class="question-block" data-index="{{ forloop.counter0 }}"
+         x-show="current === {{ forloop.counter0 }}" x-transition>
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-5">
+        <div class="flex gap-3 mb-5">
+          <span class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center text-sm font-bold flex-shrink-0">{{ forloop.counter }}</span>
+          <h2 class="text-lg font-semibold leading-snug">{{ question.text }}</h2>
+        </div>
+
+        {% if question.image %}
+        <img src="{{ question.image.url }}" alt="" class="rounded-xl mb-5 max-h-48 object-contain">
+        {% endif %}
+
+        <!-- Answer options -->
+        <div class="space-y-3">
+          {% for answer in question.answers.all %}
+          <label class="flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 cursor-pointer
+                         hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group">
+            {% if question.question_type == 'multiple' %}
+            <input type="checkbox" name="q_{{ question.id }}" value="{{ answer.id }}"
+                   class="w-5 h-5 rounded accent-indigo-600 flex-shrink-0">
+            {% else %}
+            <input type="radio" name="q_{{ question.id }}" value="{{ answer.id }}"
+                   class="w-5 h-5 accent-indigo-600 flex-shrink-0">
+            {% endif %}
+            <span class="text-sm font-medium group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{{ answer.text }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        {% if question.question_type == 'multiple' %}
+        <p class="text-xs text-gray-400 mt-3">Можно выбрать несколько вариантов</p>
+        {% endif %}
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between items-center">
+        <button type="button" @click="prev()"
+                x-show="current > 0"
+                class="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          ← Назад
+        </button>
+        <div x-show="current === 0"></div>
+
+        {% if forloop.last %}
+        <button type="submit"
+                class="px-8 py-2.5 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 transition-colors shadow-lg">
+          Завершить тест ✓
+        </button>
+        {% else %}
+        <button type="button" @click="next()"
+                class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors">
+          Следующий →
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+  </form>
+</div>
+
+<script>
+function quizApp(totalQuestions, timeLimit) {
+  return {
+    current: 0,
+    timeTaken: 0,
+    timeLeft: timeLimit,
+    timer: null,
+    startTime: Date.now(),
+
+    init() {
+      if (timeLimit > 0) {
+        this.timer = setInterval(() => {
+          this.timeLeft--;
+          this.timeTaken = timeLimit - this.timeLeft;
+          if (this.timeLeft <= 0) {
+            clearInterval(this.timer);
+            document.getElementById('quiz-form').submit();
+          }
+        }, 1000);
+      }
+    },
+
+    next() {
+      if (this.current < totalQuestions - 1) this.current++;
+    },
+
+    prev() {
+      if (this.current > 0) this.current--;
+    },
+
+    formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return m + ':' + String(s).padStart(2, '0');
+    },
+
+    handleSubmit() {
+      this.timeTaken = Math.round((Date.now() - this.startTime) / 1000);
+      if (this.timer) clearInterval(this.timer);
+    }
+  }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Таймлайн — История Кыргызстана{% endblock %}
+
+{% block content %}
+
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-16 px-4">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-sm text-white/60 mb-4">
+      <a href="{% url 'core:home' %}" class="hover:text-white">Главная</a>
+      <span class="mx-2">/</span>
+      <a href="{% url 'history:list' %}" class="hover:text-white">История</a>
+      <span class="mx-2">/</span>
+      <span>Таймлайн</span>
+    </nav>
+    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Интерактивный таймлайн</h1>
+    <p class="text-white/70 text-lg">Ключевые события истории Кыргызстана по хронологии</p>
+  </div>
+</div>
+
+<div class="max-w-5xl mx-auto px-4 py-12" x-data="{ activeEvent: null }">
+
+  <!-- Filter by period -->
+  <div class="flex flex-wrap gap-2 mb-10">
+    <a href="?period=all" class="px-4 py-2 rounded-full text-sm font-semibold transition-colors
+       {% if selected_period == 'all' %}bg-kyrgyz-red text-white{% else %}bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-kyrgyz-red{% endif %}">
+      Все эпохи
+    </a>
+    {% for period in periods %}
+    <a href="?period={{ period.slug }}" class="px-4 py-2 rounded-full text-sm font-semibold transition-colors
+       {% if selected_period == period.slug %}text-white{% else %}bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-kyrgyz-red{% endif %}"
+       {% if selected_period == period.slug %}style="background-color: {{ period.color }}"{% endif %}>
+      {{ period.title }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Timeline -->
+  <div class="relative">
+    <!-- Center line -->
+    <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-kyrgyz-red via-gray-300 to-gray-200 dark:via-gray-600 dark:to-gray-700 transform -translate-x-1/2 hidden md:block"></div>
+
+    <div class="space-y-8">
+      {% for event in events %}
+      <div class="relative group"
+           x-data="{ open: false }"
+           @click="open = !open">
+
+        <!-- Mobile: stacked layout / Desktop: alternating left-right -->
+        <div class="md:grid md:grid-cols-2 md:gap-8 cursor-pointer">
+
+          <!-- Year badge (center) -->
+          <div class="hidden md:flex absolute left-1/2 top-4 transform -translate-x-1/2 z-10">
+            <div class="w-16 h-16 rounded-full border-4 border-white dark:border-gray-900 shadow-lg flex items-center justify-center text-white font-black text-xs leading-tight text-center"
+                 style="background-color: {{ event.period.color }}">
+              {{ event.year }}
+            </div>
+          </div>
+
+          {% if forloop.counter|divisibleby:2 %}
+          <!-- Even: content on left, empty on right -->
+          <div class="md:text-right md:pr-12">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-kyrgyz-red/30 transition-all">
+              <div class="text-xs font-bold mb-2 md:hidden" style="color: {{ event.period.color }}">{{ event.year }}</div>
+              <div class="text-xs font-semibold mb-1 text-gray-400">{{ event.period.title }}</div>
+              <h3 class="font-bold mb-2 group-hover:text-kyrgyz-red transition-colors">{{ event.title }}</h3>
+              <div x-show="open" x-transition class="text-sm text-gray-500 dark:text-gray-400 mt-2">{{ event.description }}</div>
+              <div class="text-xs text-kyrgyz-red mt-2 font-semibold" x-show="!open">нажмите для подробностей</div>
+            </div>
+          </div>
+          <div class="hidden md:block"></div>
+
+          {% else %}
+          <!-- Odd: empty on left, content on right -->
+          <div class="hidden md:block"></div>
+          <div class="md:pl-12">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-kyrgyz-red/30 transition-all">
+              <div class="text-xs font-bold mb-2 md:hidden" style="color: {{ event.period.color }}">{{ event.year }}</div>
+              <div class="text-xs font-semibold mb-1 text-gray-400">{{ event.period.title }}</div>
+              <h3 class="font-bold mb-2 group-hover:text-kyrgyz-red transition-colors">{{ event.title }}</h3>
+              <div x-show="open" x-transition class="text-sm text-gray-500 dark:text-gray-400 mt-2">{{ event.description }}</div>
+              <div class="text-xs text-kyrgyz-red mt-2 font-semibold" x-show="!open">нажмите для подробностей</div>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <!-- Mobile year badge -->
+        <div class="md:hidden flex items-center gap-3 mb-3">
+          <span class="px-2 py-1 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                style="background-color: {{ event.period.color }}">
+            {{ event.year }}
+          </span>
+        </div>
+
+      </div>
+      {% empty %}
+      <div class="text-center py-16 text-gray-400">
+        <p class="text-lg font-medium">Нет событий для отображения</p>
+        <a href="?period=all" class="mt-2 inline-block text-kyrgyz-red hover:underline">Показать все эпохи</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+from django import forms
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import User
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 '
+                         'bg-white dark:bg-gray-700 text-gray-900 dark:text-white '
+                         'focus:outline-none focus:ring-2 focus:ring-red-500'
+            })
+
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 '
+                         'bg-white dark:bg-gray-700 text-gray-900 dark:text-white '
+                         'focus:outline-none focus:ring-2 focus:ring-red-500'
+            })
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'bio', 'avatar')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 '
+                         'bg-white dark:bg-gray-700 text-gray-900 dark:text-white '
+                         'focus:outline-none focus:ring-2 focus:ring-red-500'
+            })

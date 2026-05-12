@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Флаг Кыргызстана — Государственная символика{% endblock %}
+
+{% block content %}
+
+<div class="bg-gradient-to-br from-red-900 to-red-700 text-white py-12 px-4">
+  <div class="max-w-7xl mx-auto">
+    <nav class="text-sm text-white/60 mb-4">
+      <a href="{% url 'core:home' %}" class="hover:text-white">Главная</a>
+      <span class="mx-2">/</span>
+      <a href="{% url 'symbols:home' %}" class="hover:text-white">Символика</a>
+      <span class="mx-2">/</span>
+      <span>Флаг</span>
+    </nav>
+    <h1 class="text-4xl font-extrabold mb-2">Флаг Кыргызской Республики</h1>
+    <p class="text-white/80">Принят 3 марта 1992 года</p>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+
+    <!-- Interactive Flag -->
+    <div x-data="{ active: null }">
+      <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 p-6">
+        <h2 class="text-xl font-bold mb-4 text-center">Нажмите на элемент флага</h2>
+
+        <!-- Official Kyrgyz Flag -->
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          {% load static %}
+          <img src="{% static 'img/symbols/kyrgyz-flag.svg' %}"
+               alt="Флаг Кыргызской Республики"
+               class="w-full block"
+               style="aspect-ratio: 5/3; object-fit: cover;">
+        </div>
+
+        <!-- Clickable legend -->
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          <button @click="active = active === 'sun' ? null : 'sun'"
+                  class="p-4 rounded-xl border-2 text-left transition-all"
+                  :class="active === 'sun' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-yellow-400'">
+            <div class="font-semibold text-sm mb-1">☀️ Солнце — 40 лучей</div>
+            <div x-show="active === 'sun'" x-transition class="text-xs text-gray-500 dark:text-gray-400 mt-1">Сорок лучей символизируют 40 кыргызских племён, объединённых Манасом.</div>
+          </button>
+          <button @click="active = active === 'tunduk' ? null : 'tunduk'"
+                  class="p-4 rounded-xl border-2 text-left transition-all"
+                  :class="active === 'tunduk' ? 'border-kyrgyz-red bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-kyrgyz-red'">
+            <div class="font-semibold text-sm mb-1">🏠 Түндүк</div>
+            <div x-show="active === 'tunduk'" x-transition class="text-xs text-gray-500 dark:text-gray-400 mt-1">Верхняя часть юрты — символ родного дома, единства народа и открытости к небу.</div>
+          </button>
+          <button @click="active = active === 'red' ? null : 'red'"
+                  class="p-4 rounded-xl border-2 text-left transition-all"
+                  :class="active === 'red' ? 'border-kyrgyz-red bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-kyrgyz-red'">
+            <div class="font-semibold text-sm mb-1">🔴 Красный цвет</div>
+            <div x-show="active === 'red'" x-transition class="text-xs text-gray-500 dark:text-gray-400 mt-1">Символ доблести и смелости. Красный был на знамёнах Манаса Великодушного.</div>
+          </button>
+          <button @click="active = active === 'yellow' ? null : 'yellow'"
+                  class="p-4 rounded-xl border-2 text-left transition-all"
+                  :class="active === 'yellow' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-gray-200 dark:border-gray-700 hover:border-yellow-400'">
+            <div class="font-semibold text-sm mb-1">🌕 Жёлтый цвет</div>
+            <div x-show="active === 'yellow'" x-transition class="text-xs text-gray-500 dark:text-gray-400 mt-1">Символизирует мир, процветание и щедрость кыргызского народа.</div>
+          </button>
+        </div>
+
+        <!-- DB elements from admin if added -->
+        {% if elements %}
+        <div class="mt-4 space-y-2">
+          {% for el in elements %}
+          <button @click="active = active === '{{ el.name|slugify }}' ? null : '{{ el.name|slugify }}'"
+                  class="w-full p-3 rounded-xl border-2 text-left transition-all"
+                  :class="active === '{{ el.name|slugify }}' ? 'border-kyrgyz-red bg-red-50 dark:bg-red-900/20' : 'border-gray-200 dark:border-gray-700'">
+            <div class="font-semibold text-sm">{{ el.name }}</div>
+            <div x-show="active === '{{ el.name|slugify }}'" class="text-xs text-gray-500 mt-1">{{ el.description }}</div>
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Description sidebar -->
+    <div class="space-y-6">
+      {% if symbol %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h2 class="text-2xl font-bold mb-4">{{ symbol.title }}</h2>
+        <div class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ symbol.description|linebreaks }}</div>
+      </div>
+      {% if symbol.history %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h3 class="text-xl font-bold mb-3">История создания</h3>
+        <div class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">{{ symbol.history|linebreaks }}</div>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-7">
+        <h2 class="text-2xl font-bold mb-4">Флаг Кыргызской Республики</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          Государственный флаг Кыргызской Республики — красное прямоугольное полотнище с изображением в центре
+          золотого солнца с сорока равновеликими лучами, внутри которого помещён красный тюндюк кыргызской юрты.
+        </p>
+        <div class="space-y-3">
+          <div class="flex gap-3 items-start">
+            <span class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 text-base">🔴</span>
+            <div>
+              <strong class="text-sm">Красный фон</strong>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Доблесть, смелость. Был на знамёнах Манаса.</p>
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center flex-shrink-0 text-base">☀️</span>
+            <div>
+              <strong class="text-sm">40 лучей солнца</strong>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Сорок кыргызских племён, объединённых Манасом.</p>
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0 text-base">🏠</span>
+            <div>
+              <strong class="text-sm">Тюндюк (Түндүк)</strong>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Верхняя часть юрты — символ дома, отечества и единства народа.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-2xl p-6 border border-red-200 dark:border-red-800/30">
+        <h3 class="font-bold mb-4 text-kyrgyz-red">Быстрые факты</h3>
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Принят</dt>
+            <dd class="font-semibold">3 марта 1992</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Автор</dt>
+            <dd class="font-semibold">Эдиль Айтиков</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Пропорции</dt>
+            <dd class="font-semibold">3 : 5</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Фон</dt>
+            <dd class="font-semibold">Красный #E8112D</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-gray-500">Солнце и тюндюк</dt>
+            <dd class="font-semibold">Жёлтый / Красный</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const svg = document.getElementById('kyrgyz-flag-svg');
+  const ns = 'http://www.w3.org/2000/svg';
+  const cx = 150, cy = 100;
+
+  function el(tag, attrs) {
+    const e = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    return e;
+  }
+
+  // Red background
+  svg.appendChild(el('rect', { width: 300, height: 200, fill: '#E8112D' }));
+
+  const g = el('g', { transform: `translate(${cx},${cy})` });
+  svg.appendChild(g);
+
+  const R_RAY_TIP   = 72;   // tip of each ray
+  const R_RAY_BASE  = 46;   // base circle of rays (= edge of yellow circle)
+  const HALF_DEG    = 2.8;  // half-width of each ray in degrees
+
+  // --- 40 triangular rays ---
+  for (let i = 0; i < 40; i++) {
+    const a  = (i * 9) * Math.PI / 180;
+    const dA = HALF_DEG * Math.PI / 180;
+    const tip  = [R_RAY_TIP  * Math.sin(a),        -R_RAY_TIP  * Math.cos(a)];
+    const bl   = [R_RAY_BASE * Math.sin(a - dA),   -R_RAY_BASE * Math.cos(a - dA)];
+    const br   = [R_RAY_BASE * Math.sin(a + dA),   -R_RAY_BASE * Math.cos(a + dA)];
+    const pts  = `${tip[0].toFixed(2)},${tip[1].toFixed(2)} ${bl[0].toFixed(2)},${bl[1].toFixed(2)} ${br[0].toFixed(2)},${br[1].toFixed(2)}`;
+    g.appendChild(el('polygon', { points: pts, fill: '#F5C842' }));
+  }
+
+  // --- Yellow filled sun circle ---
+  g.appendChild(el('circle', { r: R_RAY_BASE, fill: '#F5C842' }));
+
+  // --- Tündük (red on yellow) ---
+  // Three concentric rings
+  const rings = [
+    { r: 42, sw: 3.0 },
+    { r: 28, sw: 2.5 },
+    { r: 13, sw: 2.5 },
+  ];
+  rings.forEach(({ r, sw }) => {
+    g.appendChild(el('circle', { r, fill: 'none', stroke: '#E8112D', 'stroke-width': sw }));
+  });
+
+  // Lattice ribs: 8 diameters (16 half-lines) evenly at 22.5°
+  for (let i = 0; i < 8; i++) {
+    const a = (i * 22.5) * Math.PI / 180;
+    const x1 =  42 * Math.sin(a), y1 = -42 * Math.cos(a);
+    const x2 = -42 * Math.sin(a), y2 =  42 * Math.cos(a);
+    g.appendChild(el('line', {
+      x1: x1.toFixed(2), y1: y1.toFixed(2),
+      x2: x2.toFixed(2), y2: y2.toFixed(2),
+      stroke: '#E8112D', 'stroke-width': 2
+    }));
+  }
+
+  // Extra rib segments between outer and middle ring (offset by 11.25°)
+  for (let i = 0; i < 16; i++) {
+    const a  = (i * 22.5 + 11.25) * Math.PI / 180;
+    const x1 = 42 * Math.sin(a), y1 = -42 * Math.cos(a);
+    const x2 = 28 * Math.sin(a), y2 = -28 * Math.cos(a);
+    g.appendChild(el('line', {
+      x1: x1.toFixed(2), y1: y1.toFixed(2),
+      x2: x2.toFixed(2), y2: y2.toFixed(2),
+      stroke: '#E8112D', 'stroke-width': 1.8
+    }));
+  }
+
+  // Center dot
+  g.appendChild(el('circle', { r: 5.5, fill: '#E8112D' }));
+})();
+</script>
+
+{% endblock %}
